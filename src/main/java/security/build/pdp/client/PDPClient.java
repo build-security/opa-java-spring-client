@@ -7,19 +7,27 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
+import org.springframework.retry.RetryCallback;
 import org.springframework.retry.backoff.FixedBackOffPolicy;
 import org.springframework.retry.policy.SimpleRetryPolicy;
 import org.springframework.retry.support.RetryTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
+import javax.annotation.PostConstruct;
 import java.util.Map;
 
+/**
+ * The PDPClient component allow making data POST request to an OPA compatible server.
+ * The client has a defined retry policy and connection timeout settings.
+ */
 @Component
 public class PDPClient {
 
-    private final RestTemplate restTemplate;
-    private final RetryTemplate retryTemplate;
+    private RestTemplate restTemplate;
+
+    private RetryTemplate retryTemplate;
+
     @Value("${pdp.port:8181}")
     private String port;
     @Value("${pdp.hostname:localhost}")
@@ -37,16 +45,8 @@ public class PDPClient {
     @Value("${pdp.retry.backoff.milliseconds}")
     private int retryBackoffMilliseconds;
 
-    public PDPClient() {
-        this.retryTemplate = createRetryTemplate();
-        this.restTemplate = createRestTemplate();
-    }
-
-    public PDPClient(String port, String host, String schema, String policyPath) {
-        this.port = port;
-        this.host = host;
-        this.schema = schema;
-        this.policyPath = policyPath;
+    @PostConstruct
+    private void postConstruct() {
         this.retryTemplate = createRetryTemplate();
         this.restTemplate = createRestTemplate();
     }
@@ -75,87 +75,58 @@ public class PDPClient {
         return template;
     }
 
-    public String getPort() {
-        return port;
-    }
 
-    public void setPort(String port) {
-        this.port = port;
-    }
-
-    public String getHost() {
-        return host;
-    }
-
-    public void setHost(String host) {
-        this.host = host;
-    }
-
-    public String getSchema() {
-        return schema;
-    }
-
-    public void setSchema(String schema) {
-        this.schema = schema;
-    }
-
-    public String getPolicyPath() {
-        return policyPath;
-    }
-
-    public void setPolicyPath(String policyPath) {
-        this.policyPath = policyPath;
-    }
-
-//    public RestTemplate getRestTemplate(RestTemplateBuilder restTemplateBuilder) {
-//
-//        ClientHttpRequestFactorySupplier
-//
-//        return  restTemplateBuilder.factory(HttpComponentsClientHttpRequestFactory.class)
-//                .setConnectTimeout(Duration.ofSeconds(5))
-//                .setReadTimeout(Duration.ofSeconds(5))
-//                .build();
-//    }
-
-    private ResponseEntity<String> evaluate(Map<String, Object> input) throws Exception {
-        //        retryTemplate.execute(
-//                context -> {
-//                    evaluateExec(input);
-//                    return true; //TODO
-//                });
+    private ResponseEntity<String> evaluateEx(Map<String, Object> input) throws Exception {
         HttpEntity<?> request = new HttpEntity<>(new PDPDataRequest(input));
         ResponseEntity<String> responseEntityStr = restTemplate.postForEntity(getQueryUrl(), request, String.class);
 
-        responseEntityStr.getStatusCode(); //TODO throw exception on invalid ret vals
+        responseEntityStr.getStatusCode();
 
         return responseEntityStr;
+    }
+
+    private ResponseEntity<String> evaluate(Map<String, Object> input) throws Throwable {
+        return retryTemplate.execute(
+                (RetryCallback<ResponseEntity<String>, Throwable>) retryContext -> {
+                    return evaluateEx(input);
+                });
 
     }
 
-    //TODO consider returning POJO with the return strcuture of OPA {result, decisionlog}
-
-    public JsonNode getJsonResponse(Map<String, Object> input) throws Exception {
+    /**
+     * Performs a POST request to the data endpoint of the PDP.
+     *
+     * @param input a map containing JSON serializable objects to set as input
+     * @return a JsonNode response for the given input.
+     * @throws Throwable
+     */
+    public JsonNode getJsonResponse(Map<String, Object> input) throws Throwable {
 
         ResponseEntity<String> responseEntityStr = evaluate(input);
 
         ObjectMapper objectMapper = new ObjectMapper();
-        JsonNode jsonNode = objectMapper.readTree(responseEntityStr.getBody());
 
-        return jsonNode;
+        return objectMapper.readTree(responseEntityStr.getBody());
     }
 
-    public Map<String, Object> getMappedResponse(Map<String, Object> input) throws Exception {
+    /**
+     * Perfoms a POST request to the data endpoint of the PDP.
+     *
+     * @param input a map containing JSON serializable objects to set as input
+     * @return a Map containing attributes and the Object values
+     * @throws Throwable
+     */
+    public Map<String, Object> getMappedResponse(Map<String, Object> input) throws Throwable {
 
         ResponseEntity<String> responseEntityStr = evaluate(input);
 
         ObjectMapper objectMapper = new ObjectMapper();
-        Map<String, Object> objectsMap = objectMapper.readValue(responseEntityStr.getBody(), new TypeReference<Map<String, Object>>() {
+
+        return objectMapper.readValue(responseEntityStr.getBody(), new TypeReference<Map<String, Object>>() {
         });
-
-        return objectsMap;
     }
 
     private String getQueryUrl() {
-        return getSchema() + "://" + getHost() + ":" + getPort() + "/v1/data" + getPolicyPath();
+        return this.schema + "://" + this.host + ":" + this.port + "/v1/data" + this.policyPath;
     }
 }
