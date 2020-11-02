@@ -63,6 +63,8 @@ Example implementation in a Spring Controller
 
 Run your PDP (OPA) instance (assuming it runs on localhost:8181).
 
+### Manual Configuration
+
 Set some data on your PDP:
 
     curl --location --request PUT 'http://localhost:8181/v1/data' \
@@ -110,6 +112,8 @@ Set your policy on the PDP, for example:
         requestedRole := input.role
         roles := data.internal.mapping[requestedGroup][env][_]
     }'
+
+### Test the evaluation
 
 Test that your PDP evaluates the policy properly:
 
