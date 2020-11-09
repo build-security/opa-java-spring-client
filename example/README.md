@@ -16,10 +16,10 @@ In order to execute the example you should have the basic prerequisites for Java
 Install the PDPClient JAR:
 
     mvn install:install-file \
-    -Dfile=./opa-java-spring-client-0.1.0.jar \
+    -Dfile=./opa-java-spring-client-0.2.0.jar \
     -DgroupId=build.security \
     -DartifactId=opa-java-spring-client \
-    -Dversion=0.1.0 \
+    -Dversion=0.2.0 \
     -Dpackaging=jar \
     -DgeneratePom=true
 
