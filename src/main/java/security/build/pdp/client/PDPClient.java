@@ -47,11 +47,19 @@ public class PDPClient {
 
     @PostConstruct
     private void postConstruct() {
-        this.retryTemplate = createRetryTemplate();
-        this.restTemplate = createRestTemplate();
+        this.retryTemplate = PDPClient.createRetryTemplate(this.readTimeout, this.connectionTimeout);
+        this.restTemplate = createRestTemplate(this.retryMaxAttempts, this.retryBackoffMilliseconds);
     }
 
-    private RestTemplate createRestTemplate() {
+    public void setRestTemplate(RestTemplate restTemplate) {
+        this.restTemplate = restTemplate;
+    }
+
+    public void setRetryTemplate(RetryTemplate retryTemplate) {
+        this.retryTemplate = retryTemplate;
+    }
+
+    public static RestTemplate createRestTemplate(int readTimeout, int connectionTimeout) {
         //RestTemplate does not use a connection pool by default, therefore we need to use HttpComponentsClientHttpRequestFactory
         HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory();
         requestFactory.setReadTimeout(readTimeout);
@@ -61,15 +69,15 @@ public class PDPClient {
         return new RestTemplate(requestFactory);
     }
 
-    private RetryTemplate createRetryTemplate() {
-        SimpleRetryPolicy retryPolicy = new SimpleRetryPolicy();
+    public static RetryTemplate createRetryTemplate(int retryMaxAttempts, int retryBackoffMilliseconds) {
+        SimpleRetryPolicy simpleRetryPolicy = new SimpleRetryPolicy();
         // Set the max retry attempts
-        retryPolicy.setMaxAttempts(retryMaxAttempts);
+        simpleRetryPolicy.setMaxAttempts(retryMaxAttempts);
         FixedBackOffPolicy backOffPolicy = new FixedBackOffPolicy();
         // set fixed backoff period in ms
         backOffPolicy.setBackOffPeriod(retryBackoffMilliseconds);
         RetryTemplate template = new RetryTemplate();
-        template.setRetryPolicy(retryPolicy);
+        template.setRetryPolicy(new InternalServerErrorRetryPolicy(simpleRetryPolicy));
         template.setBackOffPolicy(backOffPolicy);
 
         return template;
@@ -79,8 +87,6 @@ public class PDPClient {
     private ResponseEntity<String> evaluateEx(Map<String, Object> input) throws Exception {
         HttpEntity<?> request = new HttpEntity<>(new PDPDataRequest(input));
         ResponseEntity<String> responseEntityStr = restTemplate.postForEntity(getQueryUrl(), request, String.class);
-
-        responseEntityStr.getStatusCode();
 
         return responseEntityStr;
     }
@@ -95,10 +101,11 @@ public class PDPClient {
 
     /**
      * Performs a POST request to the data endpoint of the PDP.
+     * Only if an HttpServerErrorException is thrown then a retry will be attempted.
      *
      * @param input a map containing JSON serializable objects to set as input
      * @return a JsonNode response for the given input.
-     * @throws Throwable
+     * @throws org.springframework.web.client.RestClientException
      */
     public JsonNode getJsonResponse(Map<String, Object> input) throws Throwable {
 
@@ -111,10 +118,11 @@ public class PDPClient {
 
     /**
      * Perfoms a POST request to the data endpoint of the PDP.
+     * Only if an HttpServerErrorException is thrown then a retry will be attempted.
      *
      * @param input a map containing JSON serializable objects to set as input
      * @return a Map containing attributes and the Object values
-     * @throws Throwable
+     * @throws org.springframework.web.client.RestClientException
      */
     public Map<String, Object> getMappedResponse(Map<String, Object> input) throws Throwable {
 
