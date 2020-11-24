@@ -54,7 +54,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     public AccessDecisionManager accessDecisionManager() {
-        String url = getPdpSchema() + "://" + getPdpHost() + ":" + getPdpPort() + "/v1/data" + getPdpPolicyPath();
+        String url = getPdpSchema() + "://" + getPdpHost() + ":" + getPdpPort() + "/v1/data" + getPdpPolicyPath() + "/allow";
 
         List<AccessDecisionVoter<? extends Object>> decisionVoters = Arrays
                 .asList(new OPAVoter(url));
