@@ -5,7 +5,7 @@
 ### Prerequisites
 
 1. Docker compose
-2. This example assumes the Demo tenant in the demo-env, Java Sprint Demo project and the Spring app inside
+2. Tenant in build.security's SaaS with relevant project and policy
 
 ### Setup
 
