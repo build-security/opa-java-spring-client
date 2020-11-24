@@ -20,7 +20,6 @@ Update the `docker-compose.yml` file to include the relevant env-vars (API_KEY, 
 ```
 docker-compose up
 ```
-Once run - browse to http://localhost:8080
 Two endpoints available:
 1. http://localhost:8080/sdk - get the actual result from the PDP
 2. http://localhost:8080/websecurity - get the result of the /allow from the policy - Forbidden - 403
