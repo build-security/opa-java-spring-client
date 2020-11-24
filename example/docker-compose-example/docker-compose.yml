@@ -1,0 +1,21 @@
+version: "3.8"
+services:
+  spring:
+    build:
+      context: ../
+      dockerfile: docker-compose-example/spring.Dockerfile
+    ports:
+      - "8080:8080"
+    networks:
+      - dev
+  pdp:
+    image: buildsecurity/pdp
+    networks:
+      - dev
+    environment:
+      - API_KEY=<SET_API_KEY_HERE>
+      - API_SECRET=<SET_API_SECRET_HERE>
+      - CONTROL_PLANE_ADDR=<SET_CONTROL_PLANE_HERE>
+networks:
+  dev:
+

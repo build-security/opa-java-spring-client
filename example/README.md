@@ -41,7 +41,7 @@ launching a PDP that was defined in the control plane.
 
 Call the /websecurity endpoint in order to see the web-security filter working with the PDP
 
-    curl --location --request GET 'localhost:8080/webhook' 
+    curl --location --request GET 'localhost:8080/websecurity' 
 
 ### PDP Client (SDK)
 
