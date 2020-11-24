@@ -47,8 +47,8 @@ public class PDPClient {
 
     @PostConstruct
     private void postConstruct() {
-        this.retryTemplate = PDPClient.createRetryTemplate(this.readTimeout, this.connectionTimeout);
-        this.restTemplate = createRestTemplate(this.retryMaxAttempts, this.retryBackoffMilliseconds);
+        this.retryTemplate = PDPClient.createRetryTemplate(this.retryMaxAttempts, this.retryBackoffMilliseconds);
+        this.restTemplate = createRestTemplate(this.readTimeout, this.connectionTimeout);
     }
 
     public void setRestTemplate(RestTemplate restTemplate) {
