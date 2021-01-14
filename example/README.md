@@ -23,9 +23,13 @@ Install the PDPClient JAR:
     -Dpackaging=jar \
     -DgeneratePom=true
 
-Verify that the project can be built (mvn install).
+Verify that the project can be built:
 
-Run the Spring Boot application.
+    mvn install
+
+Run the Spring Boot application:
+
+    java -jar target/spring-boot-opa-demo-0.0.1-SNAPSHOT.jar
 
 ## Running and configuring the PDP
 
