@@ -1,4 +1,5 @@
 package security.build.pdp.client;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -11,7 +12,9 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.HashMap;
+import build.security.pdp.client.PDPClient;
+import build.security.pdp.request.PdpRequest;
+
 import java.util.Map;
 
 import static org.mockito.Mockito.*;
@@ -43,8 +46,8 @@ class PDPClientTest {
         ResponseEntity<String> mockResponse = new ResponseEntity<>("{\"a\":\"1\",\"b\":\"2\"}", HttpStatus.OK);
         when(mockRestTemplate.postForEntity(any(String.class), any(HttpEntity.class), eq(String.class))).thenReturn(mockResponse);
 
-        HashMap<String, Object> map = new HashMap<>();
-        JsonNode node = pdpClient.getJsonResponse(map);
+        PdpRequest request = new PdpRequest();
+        JsonNode node = pdpClient.getJsonResponse(request);
 
         //assert that there was no retry on a successful attempt
         verify(mockRestTemplate, times(1)).postForEntity(any(String.class), any(HttpEntity.class), eq(String.class));
@@ -61,8 +64,8 @@ class PDPClientTest {
         when(mockRestTemplate.postForEntity(any(String.class), any(HttpEntity.class), eq(String.class)))
                 .thenThrow(new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR)).thenReturn(mockResponseSuccess);
 
-        HashMap<String, Object> map = new HashMap<>();
-        JsonNode node = pdpClient.getJsonResponse(map);
+        PdpRequest request = new PdpRequest();
+        JsonNode node = pdpClient.getJsonResponse(request);
 
         //assert that there were exactly 2 attempts
         verify(mockRestTemplate, times(2)).postForEntity(any(String.class), any(HttpEntity.class), eq(String.class));
@@ -80,9 +83,9 @@ class PDPClientTest {
                 .thenThrow(new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR))
                 .thenThrow(new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR));
 
-        HashMap<String, Object> map = new HashMap<>();
+        PdpRequest request = new PdpRequest();
         try {
-            pdpClient.getJsonResponse(map);
+            pdpClient.getJsonResponse(request);
         } catch (HttpServerErrorException e) {
             //we are expecting a 5xx exception to be thrown
         }
@@ -98,9 +101,9 @@ class PDPClientTest {
         when(mockRestTemplate.postForEntity(any(String.class), any(HttpEntity.class), eq(String.class)))
                 .thenThrow(new HttpClientErrorException(HttpStatus.NOT_FOUND));
 
-        HashMap<String, Object> map = new HashMap<>();
+        PdpRequest request = new PdpRequest();
         try {
-            pdpClient.getJsonResponse(map);
+            pdpClient.getJsonResponse(request);
         } catch (HttpClientErrorException e) {
             //we are expecting a 4xx exception to be thrown
         }
@@ -115,8 +118,8 @@ class PDPClientTest {
         ResponseEntity<String> mockResponse = new ResponseEntity<>("{\"a\":\"1\",\"b\":\"2\"}", HttpStatus.OK);
         when(mockRestTemplate.postForEntity(any(String.class), any(HttpEntity.class), eq(String.class))).thenReturn(mockResponse);
 
-        HashMap<String, Object> map = new HashMap<>();
-        Map<String, Object> mappedResponse = pdpClient.getMappedResponse(map);
+        PdpRequest request = new PdpRequest();
+        Map<String, Object> mappedResponse = pdpClient.getMappedResponse(request);
 
         //assert that there was no retry on a successful attempt
         verify(mockRestTemplate, times(1)).postForEntity(any(String.class), any(HttpEntity.class), eq(String.class));
@@ -134,8 +137,8 @@ class PDPClientTest {
         when(mockRestTemplate.postForEntity(any(String.class), any(HttpEntity.class), eq(String.class)))
                 .thenThrow(new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR)).thenReturn(mockResponseSuccess);
 
-        HashMap<String, Object> map = new HashMap<>();
-        Map<String, Object> mappedResponse = pdpClient.getMappedResponse(map);
+        PdpRequest request = new PdpRequest();
+        Map<String, Object> mappedResponse = pdpClient.getMappedResponse(request);
 
         //assert that there were exactly 2 attempts
         verify(mockRestTemplate, times(2)).postForEntity(any(String.class), any(HttpEntity.class), eq(String.class));
@@ -153,10 +156,10 @@ class PDPClientTest {
                 .thenThrow(new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR))
                 .thenThrow(new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR));
 
-        HashMap<String, Object> map = new HashMap<>();
+        PdpRequest request = new PdpRequest();
         Map<String, Object> mappedResponse;
         try {
-            mappedResponse = pdpClient.getMappedResponse(map);
+            mappedResponse = pdpClient.getMappedResponse(request);
         } catch (HttpServerErrorException e) {
             //we are expecting a 5xx exception to be thrown
         }
@@ -172,10 +175,10 @@ class PDPClientTest {
         when(mockRestTemplate.postForEntity(any(String.class), any(HttpEntity.class), eq(String.class)))
                 .thenThrow(new HttpClientErrorException(HttpStatus.NOT_FOUND));
 
-        HashMap<String, Object> map = new HashMap<>();
+        PdpRequest request = new PdpRequest();
         Map<String, Object> mappedResponse;
         try {
-            mappedResponse = pdpClient.getMappedResponse(map);
+            mappedResponse = pdpClient.getMappedResponse(request);
         } catch (HttpClientErrorException e) {
             //we are expecting a 4xx exception to be thrown
         }
