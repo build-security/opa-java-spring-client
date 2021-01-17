@@ -21,8 +21,8 @@ public class PdpInterceptor extends HandlerInterceptorAdapter  {
             throws IOException {
         HandlerMethod method = (HandlerMethod) handler;
 
-        String[] resources = new String[0];
-        Boolean result = pdpEnforcer.RunAuthorization(request, resources);
+        String[] requirements = new String[0];
+        Boolean result = pdpEnforcer.RunAuthorization(request, requirements);
         if (result) {
             return true;
         }

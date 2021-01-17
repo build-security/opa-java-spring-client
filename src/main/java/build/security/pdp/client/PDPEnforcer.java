@@ -19,9 +19,9 @@ public class PdpEnforcer {
     @Autowired
     private PdpRequestProvider pdpRequestProvider;
 
-    public Boolean RunAuthorization(HttpServletRequest request, String[] resources) {
+    public Boolean RunAuthorization(HttpServletRequest request, String[] requirements) {
         
-        PdpRequest input = pdpRequestProvider.Provide(request);
+        PdpRequest input = pdpRequestProvider.Provide(request, requirements);
 
         boolean allowRequest;
         try {

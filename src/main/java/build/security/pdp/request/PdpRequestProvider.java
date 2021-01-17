@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 
 public class PdpRequestProvider {
 
-    public PdpRequest Provide(HttpServletRequest request) {
+    public PdpRequest Provide(HttpServletRequest request, String[] requirements) {
         Map<String, String> headers = new HashMap<String, String>();
         for (Enumeration<String> headerNames = request.getHeaderNames(); headerNames.hasMoreElements();) {
             String header = headerNames.nextElement();
@@ -18,6 +18,8 @@ public class PdpRequestProvider {
         String method = request.getMethod();
         String path = request.getRequestURI().replaceAll("^/|/$", "");
         PdpRequestIncomingHttp incomingHttp = new PdpRequestIncomingHttp(method, path);
-        return new PdpRequest(new PdpRequestInput(incomingHttp , "", ""));
+        PdpRequestResources resources = new PdpRequestResources(requirements, new HashMap<String, String>());
+        PdpRequestInput input = new PdpRequestInput(incomingHttp, resources, "", "");
+        return new PdpRequest(input);
     }
 }
