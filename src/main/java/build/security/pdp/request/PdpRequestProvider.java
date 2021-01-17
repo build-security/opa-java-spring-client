@@ -6,6 +6,9 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public class PdpRequestProvider {
 
     public PdpRequest Provide(HttpServletRequest request, String[] requirements) {
