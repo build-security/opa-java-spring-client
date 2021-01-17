@@ -1,4 +1,4 @@
-package security.build.pdp.client;
+package build.security.pdp.client;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -14,6 +14,8 @@ import org.springframework.retry.support.RetryTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
+import build.security.pdp.request.PdpRequest;
+
 import javax.annotation.PostConstruct;
 import java.util.Map;
 
@@ -22,7 +24,7 @@ import java.util.Map;
  * The client has a defined retry policy and connection timeout settings.
  */
 @Component
-public class PDPClient {
+public class PdpClient {
 
     private RestTemplate restTemplate;
 
@@ -47,7 +49,7 @@ public class PDPClient {
 
     @PostConstruct
     private void postConstruct() {
-        this.retryTemplate = PDPClient.createRetryTemplate(this.retryMaxAttempts, this.retryBackoffMilliseconds);
+        this.retryTemplate = PdpClient.createRetryTemplate(this.retryMaxAttempts, this.retryBackoffMilliseconds);
         this.restTemplate = createRestTemplate(this.readTimeout, this.connectionTimeout);
     }
 
@@ -84,17 +86,17 @@ public class PDPClient {
     }
 
 
-    private ResponseEntity<String> evaluateEx(Map<String, Object> input) throws Exception {
-        HttpEntity<?> request = new HttpEntity<>(new PDPDataRequest(input));
-        ResponseEntity<String> responseEntityStr = restTemplate.postForEntity(getQueryUrl(), request, String.class);
+    private ResponseEntity<String> evaluateEx(PdpRequest request) throws Exception {
+        HttpEntity<?> requestBody = new HttpEntity<>(request);
+        ResponseEntity<String> responseEntityStr = restTemplate.postForEntity(getQueryUrl(), requestBody, String.class);
 
         return responseEntityStr;
     }
 
-    private ResponseEntity<String> evaluate(Map<String, Object> input) throws Throwable {
+    private ResponseEntity<String> evaluate(PdpRequest request) throws Throwable {
         return retryTemplate.execute(
                 (RetryCallback<ResponseEntity<String>, Throwable>) retryContext -> {
-                    return evaluateEx(input);
+                    return evaluateEx(request);
                 });
 
     }
@@ -103,13 +105,13 @@ public class PDPClient {
      * Performs a POST request to the data endpoint of the PDP.
      * Only if an HttpServerErrorException is thrown then a retry will be attempted.
      *
-     * @param input a map containing JSON serializable objects to set as input
-     * @return a JsonNode response for the given input.
+     * @param request a map containing JSON serializable objects to set as request
+     * @return a JsonNode response for the given request.
      * @throws org.springframework.web.client.RestClientException
      */
-    public JsonNode getJsonResponse(Map<String, Object> input) throws Throwable {
+    public JsonNode getJsonResponse(PdpRequest request) throws Throwable {
 
-        ResponseEntity<String> responseEntityStr = evaluate(input);
+        ResponseEntity<String> responseEntityStr = evaluate(request);
 
         ObjectMapper objectMapper = new ObjectMapper();
 
@@ -120,13 +122,13 @@ public class PDPClient {
      * Perfoms a POST request to the data endpoint of the PDP.
      * Only if an HttpServerErrorException is thrown then a retry will be attempted.
      *
-     * @param input a map containing JSON serializable objects to set as input
+     * @param request a map containing JSON serializable objects to set as request
      * @return a Map containing attributes and the Object values
      * @throws org.springframework.web.client.RestClientException
      */
-    public Map<String, Object> getMappedResponse(Map<String, Object> input) throws Throwable {
+    public Map<String, Object> getMappedResponse(PdpRequest request) throws Throwable {
 
-        ResponseEntity<String> responseEntityStr = evaluate(input);
+        ResponseEntity<String> responseEntityStr = evaluate(request);
 
         ObjectMapper objectMapper = new ObjectMapper();
 

@@ -1,4 +1,4 @@
-package security.build.pdp.client;
+package build.security.pdp.client;
 
 import org.springframework.classify.Classifier;
 import org.springframework.retry.RetryPolicy;
