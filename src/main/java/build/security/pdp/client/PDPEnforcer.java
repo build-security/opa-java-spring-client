@@ -31,7 +31,7 @@ public class PdpEnforcer {
         
         try {
             Map<String, Object> response = pdpClient.getMappedResponse(input);
-            allowRequest = pdpResponseHandler.HandleResponse();
+            allowRequest = pdpResponseHandler.HandleResponse(response);
             
         } catch (Throwable throwable) {
             allowRequest = false;
