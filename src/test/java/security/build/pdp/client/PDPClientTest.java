@@ -12,7 +12,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
-import build.security.pdp.client.PDPClient;
+import build.security.pdp.client.PdpClient;
 import build.security.pdp.request.PdpRequest;
 
 import java.util.Map;
@@ -21,15 +21,15 @@ import static org.mockito.Mockito.*;
 
 class PDPClientTest {
 
-    private static PDPClient pdpClient;
+    private static PdpClient pdpClient;
 
     private RestTemplate mockRestTemplate;
 
     @BeforeAll
     public static void setup() {
-        //use the same PDPClient for all test with the same retry template
-        pdpClient = new PDPClient();
-        pdpClient.setRetryTemplate(PDPClient.createRetryTemplate(2, 50));
+        //use the same PdpClient for all test with the same retry template
+        pdpClient = new PdpClient();
+        pdpClient.setRetryTemplate(PdpClient.createRetryTemplate(2, 50));
     }
 
     @BeforeEach
