@@ -15,5 +15,6 @@ public class PdpRequestInput {
 
     public PdpRequestInput() {
         this.request = new PdpRequestIncomingHttp();
+        this.resources = new PdpRequestResources();
     }
 }
