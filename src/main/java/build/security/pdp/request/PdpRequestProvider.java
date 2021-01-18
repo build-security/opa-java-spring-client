@@ -20,7 +20,7 @@ public class PdpRequestProvider {
 
         String method = request.getMethod();
         String path = request.getRequestURI().replaceAll("^/|/$", "");
-        PdpRequestIncomingHttp incomingHttp = new PdpRequestIncomingHttp(method, path);
+        PdpRequestIncomingHttp incomingHttp = new PdpRequestIncomingHttp(method, path, headers);
         PdpRequestResources resources = new PdpRequestResources(requirements, new HashMap<String, String>());
         PdpRequestInput input = new PdpRequestInput(incomingHttp, resources, "", "");
         return new PdpRequest(input);
