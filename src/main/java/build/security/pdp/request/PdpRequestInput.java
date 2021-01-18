@@ -1,5 +1,8 @@
 package build.security.pdp.request;
 
+import org.springframework.boot.jackson.JsonComponent;
+
+@JsonComponent
 public class PdpRequestInput {
     PdpRequestIncomingHttp request;
     PdpRequestResources resources;
@@ -16,5 +19,21 @@ public class PdpRequestInput {
     public PdpRequestInput() {
         this.request = new PdpRequestIncomingHttp();
         this.resources = new PdpRequestResources();
+    }
+
+    public String getSource() {
+        return source;
+    }
+
+    public String getDestination() {
+        return destination;
+    }
+
+    public PdpRequestResources getResources() {
+        return resources;
+    }
+
+    public PdpRequestIncomingHttp getRequest() {
+        return request;
     }
 }
