@@ -14,7 +14,7 @@ import org.springframework.retry.support.RetryTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
-import security.build.pdp.request.PdpRequest;
+import security.build.pdp.request.PDPRequest;
 
 import javax.annotation.PostConstruct;
 import java.util.Map;
