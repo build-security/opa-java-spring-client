@@ -20,9 +20,20 @@ public class PDPRequestProvider {
 
         String method = request.getMethod();
         String path = request.getRequestURI().replaceAll("^/|/$", "");
+        String sourceIp = GetSourceIp(request);
+        String destIp = request.getLocalAddr();
         PDPRequestIncomingHttp incomingHttp = new PDPRequestIncomingHttp(method, path, headers);
         PDPRequestResources resources = new PDPRequestResources(requirements, new HashMap<String, String>());
-        PDPRequestInput input = new PDPRequestInput(incomingHttp, resources, "", "");
+        PDPRequestInput input = new PDPRequestInput(incomingHttp, resources, sourceIp, destIp);
         return new PDPRequest(input);
+    }
+
+    private String GetSourceIp(HttpServletRequest request) {
+        String ipAddress = request.getHeader("X-FORWARDED-FOR");  
+        if (ipAddress == null) {  
+            ipAddress = request.getRemoteAddr();  
+        }
+
+        return ipAddress;
     }
 }
