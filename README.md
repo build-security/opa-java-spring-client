@@ -27,36 +27,32 @@ application.properties:
 1. ```pdp.retry.backoff.milliseconds``` - the number of milliseconds to backoff between retry attempts
    
  
+<a name="example"></a>
 ## Example usage
 
-<a name="example"></a>
+PDP is registered as a spring interceptor
+
+    @Configuration
+    public class Configurer implements WebMvcConfigurer {
+
+        @Autowired
+        private PdpInterceptor pdpInterceptor;
+
+        @Override
+        public void addInterceptors(InterceptorRegistry registry) {
+            registry.addInterceptor(pdpInterceptor);
+        }
+    }
+
 Example implementation in a Spring Controller 
 
+    @Authorize(resources = {"sdk.view"})
     @RequestMapping("/sdk")
     public String sdkExample(HttpServletRequest request) throws Exception {
-        Map<String, String> headers = new HashMap<String, String>();
-        for (Enumeration<String> headerNames = request.getHeaderNames(); headerNames.hasMoreElements(); ) {
-            String header = headerNames.nextElement();
-            headers.put(header, request.getHeader(header));
-        }
+        // This endpoint will issue a request to a PDP as configured
+        // Using Authorize will annotate the request to the PDP with the vakue given there
 
-        String[] path = request.getRequestURI().replaceAll("^/|/$", "").split("/");
-
-        //define the input for evaluation
-        //In your application, you can put anything you'd like on the input for policy evaluation
-        Map<String, Object> input = new HashMap<String, Object>();
-        input.put("group", "group1");
-        input.put("environment", "staging");
-        input.put("role", "admin");
-
-        JsonNode node = null;
-        try {
-            node = pdpClient.getJsonResponse(input);
-        } catch (Throwable throwable) {
-            throwable.printStackTrace();
-        }
-
-        return node.toPrettyString();
+        // ... Controller logic 
     }
     
 ## Try it out
