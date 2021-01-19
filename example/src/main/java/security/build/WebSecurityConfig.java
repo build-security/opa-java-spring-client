@@ -33,7 +33,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         //configure the web security filter to go through the OPAVoter if accessing the /websecurity endpoint
-        http.authorizeRequests().antMatchers("/websecurity").authenticated().accessDecisionManager(accessDecisionManager());
+//         http.authorizeRequests().antMatchers("/websecurity").authenticated().accessDecisionManager(accessDecisionManager());
     }
 
     public String getPdpPort() {
