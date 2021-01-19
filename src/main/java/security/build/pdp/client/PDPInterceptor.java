@@ -21,9 +21,9 @@ public class PDPInterceptor extends HandlerInterceptorAdapter  {
             throws IOException {
         HandlerMethod method = (HandlerMethod) handler;
         System.out.println("amiramir method: " + method.toString());
-        Class<AuthorizeAnnotation> authorizeAnnotationClass = AuthorizeAnnotation.class;
-        System.out.println("amiramir annotation class: " + authorizeAnnotationClass.toString());
-        AuthorizeAnnotation annotation = method.getMethodAnnotation(authorizeAnnotationClass);
+        Class<Authorize> authorizeClass = Authorize.class;
+        System.out.println("amiramir annotation class: " + authorizeClass.toString());
+        Authorize annotation = method.getMethodAnnotation(authorizeClass);
         System.out.println("amiramir annotation instance: " + annotation.toString());
         String[] requirements = annotation != null ? annotation.resources() : new String[0];
         System.out.println("amiramir annotation requirements: " + requirements.length);

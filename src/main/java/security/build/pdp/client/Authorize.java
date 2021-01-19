@@ -13,6 +13,6 @@ import java.lang.annotation.ElementType;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Mapping
-public @interface AuthorizeAnnotation {
+public @interface Authorize {
     String[] resources();
 }
