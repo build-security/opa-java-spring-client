@@ -1,4 +1,4 @@
-package build.security.pdp.client;
+package security.build.pdp.client;
 
 import java.util.Map;
 
@@ -7,25 +7,25 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import build.security.pdp.request.PdpRequest;
-import build.security.pdp.request.PdpRequestProvider;
-import build.security.pdp.response.PdpResponseHandler;
+import security.build.pdp.request.PDPRequest;
+import security.build.pdp.request.PDPRequestProvider;
+import security.build.pdp.response.PDPResponseHandler;
 
 @Component
-public class PdpEnforcer {
+public class PDPEnforcer {
 
     @Autowired
-    private PdpRequestProvider pdpRequestProvider;
+    private PDPRequestProvider pdpRequestProvider;
 
     @Autowired
-    private PdpClient pdpClient;
+    private PDPClient pdpClient;
 
     @Autowired
-    private PdpResponseHandler pdpResponseHandler;
+    private PDPResponseHandler pdpResponseHandler;
 
     public Boolean RunAuthorization(HttpServletRequest request, String[] requirements) {
         
-        PdpRequest input = pdpRequestProvider.Provide(request, requirements);
+        PDPRequest input = pdpRequestProvider.Provide(request, requirements);
 
         boolean allowRequest;
         

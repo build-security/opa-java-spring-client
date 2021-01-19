@@ -1,4 +1,4 @@
-package build.security.pdp.request;
+package security.build.pdp.request;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -6,18 +6,18 @@ import java.util.Map;
 import org.springframework.boot.jackson.JsonComponent;
 
 @JsonComponent
-public class PdpRequestIncomingHttp {
+public class PDPRequestIncomingHttp {
     String method;
     String path;
     Map<String, String> headers;
 
-    public PdpRequestIncomingHttp(String method, String path, Map<String, String> headers) {
+    public PDPRequestIncomingHttp(String method, String path, Map<String, String> headers) {
         this.method = method;
         this.path = path;
         this.headers = headers;
     }
 
-    public PdpRequestIncomingHttp() {
+    public PDPRequestIncomingHttp() {
         this.headers = new HashMap<String, String>();
     }
 

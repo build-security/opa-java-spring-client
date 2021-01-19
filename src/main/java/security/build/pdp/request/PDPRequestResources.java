@@ -6,16 +6,16 @@ import java.util.Map;
 import org.springframework.boot.jackson.JsonComponent;
 
 @JsonComponent
-public class PdpRequestResources {
+public class PDPRequestResources {
     String[] requirements;
     Map<String, String> attributes;
 
-    public PdpRequestResources(String[] requirements, Map<String, String> attributes) {
+    public PDPRequestResources(String[] requirements, Map<String, String> attributes) {
         this.requirements = requirements;
         this.attributes = attributes;
     }
 
-    public PdpRequestResources() {
+    public PDPRequestResources() {
         this.requirements = new String[0];
         this.attributes = new HashMap<String, String>();
     }

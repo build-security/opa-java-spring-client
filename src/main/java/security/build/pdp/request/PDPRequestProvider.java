@@ -1,4 +1,4 @@
-package build.security.pdp.request;
+package security.build.pdp.request;
 
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -9,9 +9,9 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Component;
 
 @Component
-public class PdpRequestProvider {
+public class PDPRequestProvider {
 
-    public PdpRequest Provide(HttpServletRequest request, String[] requirements) {
+    public PDPRequest Provide(HttpServletRequest request, String[] requirements) {
         Map<String, String> headers = new HashMap<String, String>();
         for (Enumeration<String> headerNames = request.getHeaderNames(); headerNames.hasMoreElements();) {
             String header = headerNames.nextElement();
@@ -20,9 +20,9 @@ public class PdpRequestProvider {
 
         String method = request.getMethod();
         String path = request.getRequestURI().replaceAll("^/|/$", "");
-        PdpRequestIncomingHttp incomingHttp = new PdpRequestIncomingHttp(method, path, headers);
-        PdpRequestResources resources = new PdpRequestResources(requirements, new HashMap<String, String>());
-        PdpRequestInput input = new PdpRequestInput(incomingHttp, resources, "", "");
-        return new PdpRequest(input);
+        PDPRequestIncomingHttp incomingHttp = new PDPRequestIncomingHttp(method, path, headers);
+        PDPRequestResources resources = new PDPRequestResources(requirements, new HashMap<String, String>());
+        PDPRequestInput input = new PDPRequestInput(incomingHttp, resources, "", "");
+        return new PDPRequest(input);
     }
 }
