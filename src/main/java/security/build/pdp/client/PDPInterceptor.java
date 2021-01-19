@@ -28,7 +28,7 @@ public class PDPInterceptor extends HandlerInterceptorAdapter  {
         String[] requirements = annotation != null ? annotation.resources() : new String[0];
         System.out.println("amiramir annotation requirements: " + requirements.length);
 
-        Boolean result = pdpEnforcer.RunAuthorization(request, requirements);
+        Boolean result = pdpEnforcer.AuthorizeRequest(request, requirements);
         System.out.println("amiramir authz result: " + result);
         if (result) {
             return true;

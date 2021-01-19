@@ -23,7 +23,7 @@ public class PDPEnforcer {
     @Autowired
     private PDPResponseHandler pdpResponseHandler;
 
-    public Boolean RunAuthorization(HttpServletRequest request, String[] requirements) {
+    public Boolean AuthorizeRequest(HttpServletRequest request, String[] requirements) {
         
         PDPRequest input = pdpRequestProvider.Provide(request, requirements);
 
