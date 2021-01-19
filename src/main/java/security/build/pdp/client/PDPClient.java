@@ -122,7 +122,7 @@ public class PDPClient {
      * Performs a POST request to the data endpoint of the PDP.
      * Only if an HttpServerErrorException is thrown then a retry will be attempted.
      *
-     * @param request a map containing JSON serializable objects to set as request
+     * @param request an object containing JSON serializable objects to set as request
      * @return a JsonNode response for the given request.
      * @throws org.springframework.web.client.RestClientException
      */
@@ -157,7 +157,7 @@ public class PDPClient {
      * Performs a POST request to the data endpoint of the PDP.
      * Only if an HttpServerErrorException is thrown then a retry will be attempted.
      *
-     * @param request a map containing JSON serializable objects to set as request
+     * @param request an object containing JSON serializable objects to set as request
      * @return a Map containing attributes and the Object values
      * @throws org.springframework.web.client.RestClientException
      */

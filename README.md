@@ -46,13 +46,43 @@ PDP is registered as a spring interceptor
 
 Example implementation in a Spring Controller 
 
+    // The Authorize annotation indicates that this request should be be authorized
+    // using the PDP request interceptor. The resources supplied in the annotation will be
+    // sent on the PDP request as well.
     @Authorize(resources = {"sdk.view"})
     @RequestMapping("/sdk")
     public String sdkExample(HttpServletRequest request) throws Exception {
-        // This endpoint will issue a request to a PDP as configured
-        // Using Authorize will annotate the request to the PDP with the vakue given there
 
         // ... Controller logic 
+    }
+
+Or instead use PDPClient directly to issue a request with your own input
+
+    @RequestMapping("/sdk")
+    public String sdkExample(HttpServletRequest request) throws Exception {
+        Map<String, String> headers = new HashMap<String, String>();
+        for (Enumeration<String> headerNames = request.getHeaderNames(); headerNames.hasMoreElements(); ) {
+            String header = headerNames.nextElement();
+            headers.put(header, request.getHeader(header));
+        }
+
+        String[] path = request.getRequestURI().replaceAll("^/|/$", "").split("/");
+
+        //define the input for evaluation
+        //In your application, you can put anything you'd like on the input for policy evaluation
+        Map<String, Object> input = new HashMap<String, Object>();
+        input.put("group", "group1");
+        input.put("environment", "staging");
+        input.put("role", "admin");
+
+        JsonNode node = null;
+        try {
+            node = pdpClient.getJsonResponse(input);
+        } catch (Throwable throwable) {
+            throwable.printStackTrace();
+        }
+
+        return node.toPrettyString();
     }
     
 ## Try it out
