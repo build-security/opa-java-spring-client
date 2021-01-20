@@ -40,6 +40,17 @@ public class PDPRequestProviderTest {
     }
 
     @Test
+    void Provide_MultipleForwardedRequest_ContainsSingleSource() {
+        String sourceIp = "origin-ip";
+        String forwardedHeader = "origin-ip, chain-ip, another-chain-ip";
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        request.addHeader("X-Forwarded-For", forwardedHeader);
+
+        PDPRequest pdpRequest = PdpRequestProvider.Provide(request, new String[0]);
+        Assertions.assertEquals(sourceIp, pdpRequest.input.source);
+    }
+
+    @Test
     void Provide_ValidRequest_ContainsSource() {
         String sourceIp = "some-ip";
         MockHttpServletRequest request = new MockHttpServletRequest();

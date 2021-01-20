@@ -31,9 +31,10 @@ public class PDPRequestProvider {
     private String GetSourceIp(HttpServletRequest request) {
         String ipAddress = request.getHeader("X-FORWARDED-FOR");  
         if (ipAddress == null) {  
-            ipAddress = request.getRemoteAddr();  
+            return request.getRemoteAddr();
         }
 
-        return ipAddress;
+        String[] parts = ipAddress.split(",");
+        return parts[0];
     }
 }
