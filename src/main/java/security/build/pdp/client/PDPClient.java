@@ -14,6 +14,8 @@ import org.springframework.retry.support.RetryTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
+import security.build.pdp.request.PDPRequest;
+
 import javax.annotation.PostConstruct;
 import java.util.Map;
 
@@ -84,17 +86,17 @@ public class PDPClient {
     }
 
 
-    private ResponseEntity<String> evaluateEx(Map<String, Object> input) throws Exception {
-        HttpEntity<?> request = new HttpEntity<>(new PDPDataRequest(input));
-        ResponseEntity<String> responseEntityStr = restTemplate.postForEntity(getQueryUrl(), request, String.class);
+    private ResponseEntity<String> evaluateEx(Object request) throws Exception {
+        HttpEntity<?> requestBody = new HttpEntity<>(request);
+        ResponseEntity<String> responseEntityStr = restTemplate.postForEntity(getQueryUrl(), requestBody, String.class);
 
         return responseEntityStr;
     }
 
-    private ResponseEntity<String> evaluate(Map<String, Object> input) throws Throwable {
+    private ResponseEntity<String> evaluate(Object request) throws Throwable {
         return retryTemplate.execute(
                 (RetryCallback<ResponseEntity<String>, Throwable>) retryContext -> {
-                    return evaluateEx(input);
+                    return evaluateEx(request);
                 });
 
     }
@@ -117,7 +119,24 @@ public class PDPClient {
     }
 
     /**
-     * Perfoms a POST request to the data endpoint of the PDP.
+     * Performs a POST request to the data endpoint of the PDP.
+     * Only if an HttpServerErrorException is thrown then a retry will be attempted.
+     *
+     * @param request an object containing JSON serializable objects to set as request
+     * @return a JsonNode response for the given request.
+     * @throws org.springframework.web.client.RestClientException
+     */
+    public JsonNode getJsonResponse(PDPRequest request) throws Throwable {
+
+        ResponseEntity<String> responseEntityStr = evaluate(request);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        return objectMapper.readTree(responseEntityStr.getBody());
+    }
+
+    /**
+     * Performs a POST request to the data endpoint of the PDP.
      * Only if an HttpServerErrorException is thrown then a retry will be attempted.
      *
      * @param input a map containing JSON serializable objects to set as input
@@ -127,6 +146,24 @@ public class PDPClient {
     public Map<String, Object> getMappedResponse(Map<String, Object> input) throws Throwable {
 
         ResponseEntity<String> responseEntityStr = evaluate(input);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        return objectMapper.readValue(responseEntityStr.getBody(), new TypeReference<Map<String, Object>>() {
+        });
+    }
+
+    /**
+     * Performs a POST request to the data endpoint of the PDP.
+     * Only if an HttpServerErrorException is thrown then a retry will be attempted.
+     *
+     * @param request an object containing JSON serializable objects to set as request
+     * @return a Map containing attributes and the Object values
+     * @throws org.springframework.web.client.RestClientException
+     */
+    public Map<String, Object> getMappedResponse(PDPRequest request) throws Throwable {
+
+        ResponseEntity<String> responseEntityStr = evaluate(request);
 
         ObjectMapper objectMapper = new ObjectMapper();
 

@@ -27,10 +27,36 @@ application.properties:
 1. ```pdp.retry.backoff.milliseconds``` - the number of milliseconds to backoff between retry attempts
    
  
+<a name="example"></a>
 ## Example usage
 
-<a name="example"></a>
+PDP is registered as a spring interceptor
+
+    @Configuration
+    public class Configurer implements WebMvcConfigurer {
+
+        @Autowired
+        private PdpInterceptor pdpInterceptor;
+
+        @Override
+        public void addInterceptors(InterceptorRegistry registry) {
+            registry.addInterceptor(pdpInterceptor);
+        }
+    }
+
 Example implementation in a Spring Controller 
+
+    // The Authorize annotation indicates that this request should be be authorized
+    // using the PDP request interceptor. The resources supplied in the annotation will be
+    // sent on the PDP request as well.
+    @Authorize(resources = {"sdk.view"})
+    @RequestMapping("/sdk")
+    public String sdkExample(HttpServletRequest request) throws Exception {
+
+        // ... Controller logic 
+    }
+
+Or instead use PDPClient directly to issue a request with your own input
 
     @RequestMapping("/sdk")
     public String sdkExample(HttpServletRequest request) throws Exception {

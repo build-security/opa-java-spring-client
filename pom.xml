@@ -10,7 +10,7 @@
     </parent>
     <groupId>build.security</groupId>
     <artifactId>opa-java-spring-client</artifactId>
-    <version>0.3.0</version>
+    <version>0.3.1</version>
     <description>Demo for Spring Boot with OPA</description>
 
     <properties>
@@ -37,6 +37,12 @@
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
             <version>3.6.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-test</artifactId>
+            <version>5.2.8.RELEASE</version>
             <scope>test</scope>
         </dependency>
 
