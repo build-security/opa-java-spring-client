@@ -31,7 +31,7 @@ public class MainController {
     }
 
     //calling this endpoint does not go through the web-security filter
-    @Authorize(resources = {"sdk"})
+    @Authorize(resources = {"sdk.view"})
     @RequestMapping("/sdk")
     public String sdkExample(HttpServletRequest request) throws Exception {
         PDPRequest pdpRequest = pdpRequestProvider.Provide(request, new String[] {"sdk"});
