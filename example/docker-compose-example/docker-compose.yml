@@ -6,8 +6,12 @@ services:
       dockerfile: docker-compose-example/spring.Dockerfile
     ports:
       - "8080:8080"
+    environment:
+      - pdp.policy.path=/build/access/allow
+      - pdp.hostname=pdp
     networks:
       - dev
+
   pdp:
     image: buildsecurity/pdp
     networks:
