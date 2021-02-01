@@ -34,7 +34,7 @@ public class MainController {
     @Authorize(resources = {"sdk.view"})
     @RequestMapping("/sdk")
     public String sdkExample(HttpServletRequest request) throws Exception {
-        PDPRequest pdpRequest = pdpRequestProvider.Provide(request, new String[] {"sdk"});
+        PDPRequest pdpRequest = pdpRequestProvider.Provide(request, new String[] {"sdk.view"});
 
         JsonNode node = null;
         try {
