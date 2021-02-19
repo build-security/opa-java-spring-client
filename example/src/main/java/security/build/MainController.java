@@ -1,5 +1,6 @@
 package security.build;
 
+import org.springframework.web.bind.annotation.RequestMethod;
 import security.build.pdp.client.Authorize;
 import security.build.pdp.client.PDPClient;
 import security.build.pdp.request.PDPRequest;
@@ -23,7 +24,7 @@ public class MainController {
 
     //calling this endpoint will go through the web-security filter
     @Authorize(resources = {"demo.edit"})
-    @RequestMapping("/edit")
+    @RequestMapping(value = "/edit", method = RequestMethod.POST)
     public String webSecurityExample(HttpServletRequest request) {
         //In this case, the OPAVoter will be called and the response will be simply ACCESS_DENIED or ACCESS_GRANTED
         //in other words, no addition response is included.
