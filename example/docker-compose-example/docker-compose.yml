@@ -7,7 +7,7 @@ services:
     ports:
       - "8080:8080"
     environment:
-      - pdp.policy.path=/build/access/allow
+      - pdp.policy.path=/authz/allow
       - pdp.hostname=pdp
     networks:
       - dev
@@ -16,10 +16,13 @@ services:
     image: buildsecurity/pdp
     networks:
       - dev
+    ports:
+      - "8181:8181"
     environment:
-      - API_KEY=<SET_API_KEY_HERE>
-      - API_SECRET=<SET_API_SECRET_HERE>
-      - CONTROL_PLANE_ADDR=<SET_CONTROL_PLANE_HERE>
+      - API_KEY=R5Irjd6oSa966bAqxtUU9xrZ6ivxYGhT
+      - API_SECRET=fnVZJCTjxbzELoi3FnsmSSIJn6S7XHLm5kuEXgxynuhnT2ubKVfiv4l5OEQCEkkJ
+      - CONTROL_PLANE_ADDR=https://console.poc.build.security/v1/api/pdp
+      - PG_PASSWD=password
 networks:
   dev:
 

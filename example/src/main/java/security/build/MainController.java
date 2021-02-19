@@ -22,9 +22,18 @@ public class MainController {
     private PDPRequestProvider pdpRequestProvider;
 
     //calling this endpoint will go through the web-security filter
-    @Authorize(resources = {"websecurity"})
-    @RequestMapping("/websecurity")
+    @Authorize(resources = {"demo.edit"})
+    @RequestMapping("/edit")
     public String webSecurityExample(HttpServletRequest request) {
+        //In this case, the OPAVoter will be called and the response will be simply ACCESS_DENIED or ACCESS_GRANTED
+        //in other words, no addition response is included.
+        return "passed authorization by web-security filter check";
+    }
+
+    //calling this endpoint will go through the web-security filter
+    @Authorize(resources = {"demo.view"})
+    @RequestMapping("/view")
+    public String webSecurityExample2(HttpServletRequest request) {
         //In this case, the OPAVoter will be called and the response will be simply ACCESS_DENIED or ACCESS_GRANTED
         //in other words, no addition response is included.
         return "passed authorization by web-security filter check";
