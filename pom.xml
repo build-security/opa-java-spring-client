@@ -10,7 +10,7 @@
     </parent>
     <groupId>build.security</groupId>
     <artifactId>opa-java-spring-client</artifactId>
-    <version>0.3.1</version>
+    <version>0.3.2</version>
     <description>Demo for Spring Boot with OPA</description>
 
     <properties>
