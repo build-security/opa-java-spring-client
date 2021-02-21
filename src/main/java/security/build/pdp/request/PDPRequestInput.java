@@ -1,7 +1,5 @@
 package security.build.pdp.request;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.springframework.boot.jackson.JsonComponent;
 
 @JsonComponent
@@ -14,7 +12,7 @@ public class PDPRequestInput {
     public PDPRequestInput(PDPRequestIncomingHttp request, PDPRequestResources resources, String source, String destination) {
         this.request = request;
         this.resources = resources;
-        this.source = new PDPConnectionTuple(source, 0)
+        this.source = new PDPConnectionTuple(source, 0);
         this.destination = new PDPConnectionTuple(destination, 0);
     }
 

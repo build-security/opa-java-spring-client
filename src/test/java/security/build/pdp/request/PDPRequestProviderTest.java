@@ -36,7 +36,7 @@ public class PDPRequestProviderTest {
         request.addHeader("X-Forwarded-For", sourceIp);
 
         PDPRequest pdpRequest = PdpRequestProvider.Provide(request, new String[0]);
-        Assertions.assertEquals(sourceIp, pdpRequest.input.source.get("ipAddress").asText());
+        Assertions.assertEquals(sourceIp, pdpRequest.input.source.ipAddress);
     }
 
     @Test
@@ -47,7 +47,7 @@ public class PDPRequestProviderTest {
         request.addHeader("X-Forwarded-For", forwardedHeader);
 
         PDPRequest pdpRequest = PdpRequestProvider.Provide(request, new String[0]);
-        Assertions.assertEquals(sourceIp, pdpRequest.input.source.get("ipAddress").asText());
+        Assertions.assertEquals(sourceIp, pdpRequest.input.source.ipAddress);
     }
 
     @Test
@@ -57,7 +57,7 @@ public class PDPRequestProviderTest {
         request.setRemoteAddr(sourceIp);
 
         PDPRequest pdpRequest = PdpRequestProvider.Provide(request, new String[0]);
-        Assertions.assertEquals(sourceIp, pdpRequest.input.source.get("ipAddress").asText());
+        Assertions.assertEquals(sourceIp, pdpRequest.input.source.ipAddress);
     }
 
     @Test
@@ -67,7 +67,7 @@ public class PDPRequestProviderTest {
         request.setLocalAddr(serverIp);
 
         PDPRequest pdpRequest = PdpRequestProvider.Provide(request, new String[0]);
-        Assertions.assertEquals(serverIp, pdpRequest.input.destination);
+        Assertions.assertEquals(serverIp, pdpRequest.input.destination.ipAddress);
     }
 
     @ParameterizedTest
