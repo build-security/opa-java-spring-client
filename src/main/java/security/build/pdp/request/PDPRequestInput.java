@@ -8,16 +8,14 @@ import org.springframework.boot.jackson.JsonComponent;
 public class PDPRequestInput {
     PDPRequestIncomingHttp request;
     PDPRequestResources resources;
-    ObjectNode source;
-    String destination;
+    PDPConnectionTuple source;
+    PDPConnectionTuple destination;
 
     public PDPRequestInput(PDPRequestIncomingHttp request, PDPRequestResources resources, String source, String destination) {
         this.request = request;
         this.resources = resources;
-        final ObjectMapper mapper = new ObjectMapper();
-        this.source = mapper.createObjectNode();
-        this.source.put("ipAddress", source);
-        this.destination = destination;
+        this.source = new PDPConnectionTuple(source, 0)
+        this.destination = new PDPConnectionTuple(destination, 0);
     }
 
     public PDPRequestInput() {
@@ -25,11 +23,11 @@ public class PDPRequestInput {
         this.resources = new PDPRequestResources();
     }
 
-    public ObjectNode getSource() {
+    public PDPConnectionTuple getSource() {
         return source;
     }
 
-    public String getDestination() {
+    public PDPConnectionTuple getDestination() {
         return destination;
     }
 
