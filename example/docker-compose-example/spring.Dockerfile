@@ -6,7 +6,7 @@ RUN mvn install:install-file \
 -Dfile=./opa-java-spring-client-0.3.2.jar \
 -DgroupId=build.security \
 -DartifactId=opa-java-spring-client \
--Dversion=0.3.1 \
+-Dversion=0.3.2 \
 -Dpackaging=jar \
 -DgeneratePom=true
 RUN mvn package
