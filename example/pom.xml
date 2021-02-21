@@ -15,10 +15,10 @@
 
     <properties>
         <java.version>1.8</java.version>
-        <pdpclient.jar.path>opa-java-spring-client-0.3.1.jar</pdpclient.jar.path>
+        <pdpclient.jar.path>opa-java-spring-client-0.3.2.jar</pdpclient.jar.path>
         <pdpclient.groupID>build.security</pdpclient.groupID>
         <pdpclient.artifactId>opa-java-spring-client</pdpclient.artifactId>
-        <pdpclient.version>0.3.1</pdpclient.version>
+        <pdpclient.version>0.3.2</pdpclient.version>
     </properties>
 
     <dependencies>
