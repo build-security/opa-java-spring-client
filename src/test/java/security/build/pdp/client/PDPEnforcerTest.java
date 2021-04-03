@@ -36,6 +36,8 @@ public class PDPEnforcerTest {
 
         Mockito.when(pdpRequestProvider.Provide(request, requirements)).thenReturn(pdpRequest);
         Mockito.when(pdpClient.getMappedResponse(pdpRequest)).thenReturn(resultMap);
+
+        pdpEnforcer.setAllowOnFailure(false);
     }
 
     @Test
@@ -55,6 +57,16 @@ public class PDPEnforcerTest {
     @Test
     void AuthorizeRequest_ValidResponse_Authorized() throws Throwable {
         resultMap.put("result", true);
+
+        Boolean isAuthorized = pdpEnforcer.AuthorizeRequest(request, requirements);
+        Assertions.assertEquals(isAuthorized, true);
+    }
+
+    @Test
+    void AuthorizeRequest_ExceptionAllowOnFailure_Authorized() throws Throwable {
+        Mockito.when(pdpClient.getMappedResponse(pdpRequest)).thenThrow(new RuntimeException());
+
+        pdpEnforcer.setAllowOnFailure(true);
 
         Boolean isAuthorized = pdpEnforcer.AuthorizeRequest(request, requirements);
         Assertions.assertEquals(isAuthorized, true);
