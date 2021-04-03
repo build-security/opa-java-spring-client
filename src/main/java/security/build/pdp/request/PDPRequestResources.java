@@ -20,7 +20,7 @@ public class PDPRequestResources {
         this.attributes = new HashMap<String, String>();
     }
 
-    public Map<String, String> getAttrubutes() {
+    public Map<String, String> getAttributes() {
         return attributes;
     }
 
