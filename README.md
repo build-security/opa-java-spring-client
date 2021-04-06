@@ -10,6 +10,8 @@ If you're not familiar with OPA, click [here](https://www.openpolicyagent.org/) 
 You may configure the PDP client component by setting the following properties in your 
 application.properties:
 
+    pdp.enable=true
+    pdp.allowOnFailure=false
     pdp.port=8181
     pdp.hostname=localhost
     pdp.policy.path=/mypolicy
@@ -18,6 +20,8 @@ application.properties:
     pdp.retry.maxAttempts=2
     pdp.retry.backoff.milliseconds=250
     
+1. ```pdp.enable``` - whether PDP authorization should be enabled
+1. ```pdp.allowOnFailure``` - whether errors during PDP authorization should let requests through
 1. ```pdp.port``` - the PDP port
 1. ```pdp.hostname``` - the PDP address
 1. ```pdp.policy.path``` - the path of the policy to evaluate
