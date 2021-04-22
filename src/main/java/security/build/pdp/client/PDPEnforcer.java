@@ -5,6 +5,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import security.build.pdp.request.PDPRequest;
@@ -13,6 +14,9 @@ import security.build.pdp.response.PDPResponseHandler;
 
 @Component
 public class PDPEnforcer {
+
+    @Value("${pdp.allowOnFailure:false}")
+    private Boolean allowOnFailure;
 
     @Autowired
     private PDPRequestProvider pdpRequestProvider;
@@ -24,6 +28,7 @@ public class PDPEnforcer {
     private PDPResponseHandler pdpResponseHandler;
 
     public Boolean AuthorizeRequest(HttpServletRequest request, String[] requirements) {
+
         
         PDPRequest input = pdpRequestProvider.Provide(request, requirements);
 
@@ -34,9 +39,21 @@ public class PDPEnforcer {
             allowRequest = pdpResponseHandler.HandleResponse(response);
             
         } catch (Throwable throwable) {
-            allowRequest = false;
+            if (allowOnFailure) {
+                allowRequest = true;
+            } else {
+                allowRequest = false;
+            }
         }
 
         return allowRequest;
+    }
+
+    public Boolean getAllowOnFailure() {
+        return allowOnFailure;
+    }
+
+    public void setAllowOnFailure(Boolean allowOnFailure) {
+        this.allowOnFailure = allowOnFailure;
     }
 }
