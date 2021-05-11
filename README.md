@@ -1,7 +1,7 @@
 # opa-java-spring-client
 ## Abstract
-Build.Security provides simple development and management of the organization's authorization policy.
-Opa-java-spring-client is a Spring middleware intended for performing authorizing requests against build.security/[OPA](https://www.openpolicyagent.org/).
+build.security provides simple development and management of the organization's authorization policy.
+opa-java-spring-client is a Spring middleware intended for performing authorizing requests against build.security pdp/[OPA](https://www.openpolicyagent.org/).
 
 ## Data Flow
 ![enter image description here](https://github.com/build-security/opa-express-middleware/blob/main/Data%20flow.png)
@@ -27,7 +27,7 @@ application.properties:
     pdp.allowOnFailure=false
     pdp.port=8181
     pdp.hostname=localhost
-    pdp.policy.path=/mypolicy
+    pdp.policy.path=/javaSpring/authz
     pdp.readTimeout.milliseconds=5000
     pdp.connectionTimeout.milliseconds=5000
     pdp.retry.maxAttempts=2
@@ -42,11 +42,11 @@ application.properties:
  [How to get your pdp's hostname and port?](https://docs.build.security/policy-decision-points-pdp#pdp-instances-section)
   ### Optional configuration
  1. `pdp.allowOnFailure`: Boolean. "Fail open" mechanism to allow access to the API in case the policy engine is not reachable. **Default is false**.
- 2. `includeBody`: Boolean. Whether or not to pass the request body to the policy engine. **Default is true**.
- 3. `includeHeaders`: Boolean. Whether or not to pass the request headers to the policy engine. **Default is true**
- 4. `timeout`: Boolean. Amount of time to wait before request is abandoned and request is declared as failed. **Default is 1000ms**.
- 5. `pdp.enable`: Boolean. Whether or not to consult with the policy engine for the specific request. **Default is true**
-
+ 2. `pdp.retry.maxAttempts` - Integer. the maximum number of retry attempts in case a failure occurs. **Default is 2**.
+ 3. `pdp.enable`: Boolean. Whether or not to consult with the policy engine for the specific request. **Default is true**
+ 4. `pdp.readTimeout.milliseconds` - Integer. Read timeout for requests in milliseconds. **Default is 5000**
+ 5. `pdp.connectionTimeout.milliseconds` - Integer. Connection timeout in milliseconds. **Default is 5000**
+ 6. `pdp.retry.backoff.milliseconds` - Integer. The number of milliseconds to wait between two consecutive retry attempts. **Default is 250**
 ## Example usage
 
 Register your PDP as a spring interceptor
@@ -119,47 +119,36 @@ This is what the input received by the PDP would look like.
 
 ```
 {
-    "input": {
-        "request": {
-            "method": "GET",
-            "query": {
-                "querykey": "queryvalue"
-            },
-            "path": "/some/path",
-            "scheme": "http",
-            "host": "localhost",
-            "body": {
-                "bodykey": "bodyvalue"
-            },
-            "headers": {
-                "content-type": "application/json",
-                "user-agent": "PostmanRuntime/7.26.5",
-                "accept": "*/*",
-                "cache-control": "no-cache",
-                "host": "localhost:3000",
-                "accept-encoding": "gzip, deflate, br",
-                "connection": "keep-alive",
-                "content-length": "24"
-            }
-        },
-        "source": {
-            "port": 63405,
-            "address": "::1"
-        },
-        "destination": {
-            "port": 3000,
-            "address": "::1"
-        },
-        "resources": {
-            "attributes": {
-                "region": "israel",
-                "userId": "buildsec"
-            },
-            "permissions": [
-                "user.read"
-            ]
-        },
-        "serviceId": 1
-    }
+   "input":{
+      "request":{
+         "scheme":"http",
+         "method":"GET",
+         "path":"websecurity",
+         "query":{
+            
+         },
+         "headers":{
+            "host":"localhost:8080",
+            "user-agent":"curl/7.64.1",
+            "accept":"*/*"
+         }
+      },
+      "resources":{
+         "requirements":[
+            "websecurity"
+         ],
+         "attributes":{
+            
+         }
+      },
+      "source":{
+         "ipAddress":"172.19.0.1",
+         "port":0
+      },
+      "destination":{
+         "ipAddress":"172.19.0.2",
+         "port":0
+      }
+   }
 }
 ```
