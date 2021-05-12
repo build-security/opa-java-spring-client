@@ -1,10 +1,10 @@
 # opa-java-spring-client
 ## Abstract
-build.security provides simple development and management of the organization's authorization policy.
+[build.security](https://docs.build.security/) provides simple development and management of the organization's authorization policy.
 opa-java-spring-client is a Spring middleware intended for performing authorizing requests against build.security pdp/[OPA](https://www.openpolicyagent.org/).
 
 ## Data Flow
-![enter image description here](https://github.com/build-security/opa-express-middleware/blob/main/Data%20flow.png)
+<img src="https://github.com/build-security/opa-express-middleware/blob/main/Data%20flow.png" alt="drawing" width="200"/>
 
 ## Usage
 Before you start we recommend completing the onboarding tutorial.
@@ -13,7 +13,7 @@ Before you start we recommend completing the onboarding tutorial.
 **Important note**
 
 To simplify the setup process, the following example uses a local build.security pdp instance.
-If you are already familiar with how to run your PDP (Policy Decision Point) on your enviroment we recommend you to use it instead.
+If you are already familiar with how to run your PDP (Policy Decision Point) on your environment we recommend you to use it instead.
 
 In that case, don't forget to change the **hostname** and the **port** in your code.
 
