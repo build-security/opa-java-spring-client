@@ -1,6 +1,6 @@
 # opa-java-spring-client
 
-<img src="Logo-build.png" alt="drawing" width="200"/>
+<img src="Logo-build.png" alt="drawing" width="400"/>
 
 ## Abstract
 [build.security](https://docs.build.security/) provides simple development and management of the organization's authorization policy.
