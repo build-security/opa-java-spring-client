@@ -7,7 +7,7 @@
 opa-java-spring-client is a Spring middleware intended for performing authorizing requests against build.security pdp/[OPA](https://www.openpolicyagent.org/).
 
 ## Data Flow
-<p align="center"> <img src="https://github.com/build-security/opa-express-middleware/blob/main/Data%20flow.png" alt="drawing" width="60%"/></p>
+<p align="center"> <img src="Data%20flow.png" alt="drawing" width="60%"/></p>
 
 ## Usage
 Before you start we recommend completing the onboarding tutorial.
