@@ -1,10 +1,13 @@
 # opa-java-spring-client
+
+<img src="Logo-build.png" alt="drawing" width="200"/>
+
 ## Abstract
 [build.security](https://docs.build.security/) provides simple development and management of the organization's authorization policy.
 opa-java-spring-client is a Spring middleware intended for performing authorizing requests against build.security pdp/[OPA](https://www.openpolicyagent.org/).
 
 ## Data Flow
-<img src="https://github.com/build-security/opa-express-middleware/blob/main/Data%20flow.png" alt="drawing" width="400"/>
+<img src="https://github.com/build-security/opa-express-middleware/blob/main/Data%20flow.png" alt="drawing" width="200"/>
 
 ## Usage
 Before you start we recommend completing the onboarding tutorial.
@@ -12,8 +15,8 @@ Before you start we recommend completing the onboarding tutorial.
 ---
 **Important note**
 
-To simplify the setup process, the following example uses a local build.security pdp instance.
-If you are already familiar with how to run your PDP (Policy Decision Point) on your environment we recommend you to use it instead.
+To simplify the setup process, the following example uses a local [build.security pdp instance](https://docs.build.security/policy-decision-points-pdp/pdp-deployments/standalone-docker-1).
+If you are already familiar with how to run your PDP (Policy Decision Point), You can also run a pdp on you environment (Dev/Prod, etc).
 
 In that case, don't forget to change the **hostname** and the **port** in your code.
 
@@ -111,8 +114,8 @@ Or instead use PDPClient directly to issue a request with your own input
     
 ## Try it out
 
-Run your PDP (OPA) instance (assuming it runs on localhost:8181) and your spring server(localhost:8080).
-
+Run your PDP (OPA) instance (assuming it runs on localhost:8181) and your spring server(localhost:8080).  
+* Please make sure to [define some pdp policy rules](https://docs.build.security/policies/creating-a-new-policy).
 ### PDP Request example
 
 This is what the input received by the PDP would look like.
@@ -150,5 +153,14 @@ This is what the input received by the PDP would look like.
          "port":0
       }
    }
+}
+```
+
+If everything works well you should receive the following response:
+```
+{
+    "result": {
+        "allow": true
+    }
 }
 ```
