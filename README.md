@@ -12,8 +12,8 @@ Before you start we recommend completing the onboarding tutorial.
 ---
 **Important note**
 
-To simplify the setup process, the following example uses our managed aws pdp.
-If you are already familiar with how to run your PDP (Policy Decision Point) we recommend you to use it instead.
+To simplify the setup process, the following example uses a local build.security pdp instance.
+If you are already familiar with how to run your PDP (Policy Decision Point) on your enviroment we recommend you to use it instead.
 
 In that case, don't forget to change the **hostname** and the **port** in your code.
 
@@ -111,7 +111,7 @@ Or instead use PDPClient directly to issue a request with your own input
     
 ## Try it out
 
-Run your PDP (OPA) instance (assuming it runs on localhost:8181).
+Run your PDP (OPA) instance (assuming it runs on localhost:8181) and your spring server(localhost:8080).
 
 ### PDP Request example
 
