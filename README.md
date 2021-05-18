@@ -30,7 +30,7 @@ application.properties:
     pdp.allowOnFailure=false
     pdp.port=8181
     pdp.hostname=localhost
-    pdp.policy.path=/javaSpring/authz
+    pdp.policy.path=/spring/authz/allow
     pdp.readTimeout.milliseconds=5000
     pdp.connectionTimeout.milliseconds=5000
     pdp.retry.maxAttempts=2
