@@ -27,9 +27,16 @@ Verify that the project can be built:
 
     mvn install
 
+Create a new jar file - 
+    mvn package
+    
 Run the Spring Boot application:
 
-    java -jar target/spring-boot-opa-demo-0.0.1-SNAPSHOT.jar
+    java -jar target/opa-java-spring-client-0.3.2.jar
+
+** If you would like to use the docker-compose, please copy the new jar to the example folder: 
+
+    cp ./target/opa-java-spring-client-0.3.2.jar ./example/opa-java-spring-client-0.3.2.jar
 
 ## Running and configuring the PDP
 

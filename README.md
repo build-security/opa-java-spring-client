@@ -1,41 +1,59 @@
 # opa-java-spring-client
 
-This repository contains a Spring component, for usage in Spring applications, for making policy evaluation requests
-to PDPs (Policy Decision Point) which are compatible with the OPA (Open Policy Agent) API. 
+<p align="center"><img src="Logo-build.png" class="center" alt="build-logo" width="30%"/></p>
 
-If you're not familiar with OPA, click [here](https://www.openpolicyagent.org/) to learn more.
+## Abstract
+[build.security](https://docs.build.security/) provides simple development and management for your organization's authorization policy.
+opa-java-spring-client is a Spring middleware intended for performing authorization requests against build.security PDP(Policy Decision Point)/[OPA](https://www.openpolicyagent.org/).
 
-## Configuration properties
+## Data Flow
+<p align="center"> <img src="Data%20flow.png" alt="drawing" width="60%"/></p>
 
-You may configure the PDP client component by setting the following properties in your 
+## Usage
+Before you start we recommend completing the onboarding tutorial.
+
+---
+**Important note**
+
+To simplify the setup process, the following example uses a local [build.security PDP instance](https://docs.build.security/policy-decision-points-pdp/pdp-deployments/standalone-docker-1).
+If you are already familiar with how to run your PDP, You can also run a PDP on you environment (Dev/Prod, etc).
+
+In that case, don't forget to change the **hostname** and the **port** in your code.
+
+---
+### Simple usage
+
+Configure the PDP client component by setting the following properties in your 
 application.properties:
 
     pdp.enable=true
     pdp.allowOnFailure=false
     pdp.port=8181
     pdp.hostname=localhost
-    pdp.policy.path=/mypolicy
+    pdp.policy.path=/authz/allow
     pdp.readTimeout.milliseconds=5000
     pdp.connectionTimeout.milliseconds=5000
     pdp.retry.maxAttempts=2
     pdp.retry.backoff.milliseconds=250
-    
-1. ```pdp.enable``` - whether PDP authorization should be enabled
-1. ```pdp.allowOnFailure``` - whether errors during PDP authorization should let requests through
-1. ```pdp.port``` - the PDP port
-1. ```pdp.hostname``` - the PDP address
-1. ```pdp.policy.path``` - the path of the policy to evaluate
-1. ```pdp.readTimeout.milliseconds``` - read timeout for requests in milliseconds 
-1. ```pdp.connectionTimeout.milliseconds``` - connection timeout in milliseconds
-1. ```pdp.retry.maxAttempts``` - the maximum number of retry attempts in case a failure occurs
-1. ```pdp.retry.backoff.milliseconds``` - the number of milliseconds to backoff between retry attempts
    
+ ### Mandatory configuration - 
+
+ 1. `pdp.hostname`: The hostname of the Policy Decision Point (PDP)
+ 2. `pdp.port`: The port at which the OPA service is running
+ 3. `pdp.policyPath.path`: Full path to the policy (including the rule) that decides whether requests should be authorized
  
-<a name="example"></a>
+ [How to get your pdp's hostname and port?](https://docs.build.security/policy-decision-points-pdp#pdp-instances-section)
+  ### Optional configuration
+ 1. `pdp.allowOnFailure`: Boolean. "Fail open" mechanism to allow access to the API in case the policy engine is not reachable. **Default is false**.
+ 2. `pdp.retry.maxAttempts` - Integer. the maximum number of retry attempts in case a failure occurs. **Default is 2**.
+ 3. `pdp.enable`: Boolean. Whether or not to consult with the policy engine for the specific request. **Default is true**
+ 4. `pdp.readTimeout.milliseconds` - Integer. Read timeout for requests in milliseconds. **Default is 5000**
+ 5. `pdp.connectionTimeout.milliseconds` - Integer. Connection timeout in milliseconds. **Default is 5000**
+ 6. `pdp.retry.backoff.milliseconds` - Integer. The number of milliseconds to wait between two consecutive retry attempts. **Default is 250**
 ## Example usage
 
-PDP is registered as a spring interceptor
-
+Register your PDP as a spring interceptor
+```java
     @Configuration
     public class Configurer implements WebMvcConfigurer {
 
@@ -47,9 +65,11 @@ PDP is registered as a spring interceptor
             registry.addInterceptor(pdpInterceptor);
         }
     }
+```
 
 Example implementation in a Spring Controller 
 
+```java
     // The Authorize annotation indicates that this request should be be authorized
     // using the PDP request interceptor. The resources supplied in the annotation will be
     // sent on the PDP request as well.
@@ -59,9 +79,11 @@ Example implementation in a Spring Controller
 
         // ... Controller logic 
     }
+```
 
 Or instead use PDPClient directly to issue a request with your own input
 
+```java
     @RequestMapping("/sdk")
     public String sdkExample(HttpServletRequest request) throws Exception {
         Map<String, String> headers = new HashMap<String, String>();
@@ -88,87 +110,56 @@ Or instead use PDPClient directly to issue a request with your own input
 
         return node.toPrettyString();
     }
+```
     
 ## Try it out
 
-Run your PDP (OPA) instance (assuming it runs on localhost:8181).
+Run your PDP (OPA) instance (assuming it runs on localhost:8181) and your spring server(localhost:8080).  
+* Please make sure to [define some pdp policy rules](https://docs.build.security/policies/creating-a-new-policy).
+### PDP Request example
 
-### Manual Configuration
+This is what the input received by the PDP would look like.
 
-Set some data on your PDP:
+```
+{
+   "input":{
+      "request":{
+         "scheme":"http",
+         "method":"GET",
+         "path":"websecurity",
+         "query":{
+            
+         },
+         "headers":{
+            "host":"localhost:8080",
+            "user-agent":"curl/7.64.1",
+            "accept":"*/*"
+         }
+      },
+      "resources":{
+         "requirements":[
+            "websecurity"
+         ],
+         "attributes":{
+            
+         }
+      },
+      "source":{
+         "ipAddress":"172.19.0.1",
+         "port":0
+      },
+      "destination":{
+         "ipAddress":"172.19.0.2",
+         "port":0
+      }
+   }
+}
+```
 
-    curl --location --request PUT 'http://localhost:8181/v1/data' \
-    --header 'Content-Type: text/plain' \
-    --data-raw '{ "internal": {
-            "mapping" : {
-                "group1" : {
-                    "dev" : ["read", "write", "all"],
-                    "int" : ["read", "write", "all"],
-                    "staging" : ["read", "write", "all"],
-                    "preprod" : ["read", "all"],
-                    "prod" : ["read"]
-                },
-                "group2" : {
-                    "dev" : ["read"],
-                    "int" : ["read"],
-                    "staging" : ["read", "write", "all"],
-                    "preprod" : ["read", "write", "all"],
-                    "prod" : ["read", "write", "all"]
-                }    
-            }
-        }
-    }'
-
-Set your policy on the PDP, for example:
-
-    curl --location --request PUT 'http://localhost:8181/v1/policies/mypolicy' \
-    --header 'Content-Type: text/plain' \
-    --data-raw 'package mypolicy
-    
-    default allow = false
-    default deny = false
-    
-    allow {   
-        requestedGroup := input.group
-        env := input.environment
-        requestedRole := input.role
-    
-        requestedRole == data.internal.mapping[requestedGroup][env][_]
-    }
-    
-    roles_granted[roles] {
-        requestedGroup := input.group
-        env := input.environment
-        requestedRole := input.role
-        roles := data.internal.mapping[requestedGroup][env][_]
-    }'
-
-### Test the evaluation
-
-Test that your PDP evaluates the policy properly:
-
-    curl --location --request POST 'http://localhost:8181/v1/data/mypolicy' \
-    --header 'Content-Type: text/plain' \
-    --data-raw '{ 
-        "input": {
-            "group": "group1",
-            "environment": "staging",
-            "role": "read"
-       }
-    }'
-    
-You should see a response as follows:
-
-    {
-        "result": {
-            "allow": true,
-            "deny": false,
-            "roles_granted": [
-                "read",
-                "write",
-                "all"
-            ]
-        }
-    }
-
-Now use the PDPClient in your code, as shown in the [example above](#example), for doing similar queries from your application code.
+If everything works well you should receive the following response:
+```
+{
+    "decision_id":"ef414180-05bd-4817-9634-7d1537d5a657",
+    "result":true
+}
+```

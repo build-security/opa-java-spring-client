@@ -38,13 +38,13 @@ public class PDPClient {
     private String schema;
     @Value("${pdp.policy.path}")
     private String policyPath;
-    @Value("${pdp.readTimeout.milliseconds}")
+    @Value("${pdp.readTimeout.milliseconds:5000}")
     private int readTimeout;
-    @Value("${pdp.connectionTimeout.milliseconds}")
+    @Value("${pdp.connectionTimeout.milliseconds:5000}")
     private int connectionTimeout;
-    @Value("${pdp.retry.maxAttempts}")
+    @Value("${pdp.retry.maxAttempts:2}")
     private int retryMaxAttempts;
-    @Value("${pdp.retry.backoff.milliseconds}")
+    @Value("${pdp.retry.backoff.milliseconds:250}")
     private int retryBackoffMilliseconds;
 
     @PostConstruct
