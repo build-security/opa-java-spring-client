@@ -7,9 +7,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.web.method.HandlerMethod;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.lang.reflect.Method;
 
@@ -29,6 +31,7 @@ public class PDPInterceptorTest {
 
     private HandlerMethod handlerMethod;
 
+    private MockHttpServletRequest request = new MockHttpServletRequest();
     private HttpServletResponse response = new MockHttpServletResponse();
 
     private String[] requirements;
@@ -73,5 +76,53 @@ public class PDPInterceptorTest {
 
         Boolean isAuthorized = pdpInterceptor.preHandle(null, response, handlerMethod);
         Assertions.assertEquals(true, isAuthorized);
+    }
+
+    @Test
+    void PreHandle_IgnoreEndpoints_Authorized() throws Throwable {
+        pdpInterceptor.setEnable(true);
+        pdpInterceptor.setIgnoreEndpoints(new String[] {"/path1", "/path2"});
+
+        request.setRequestURI("/path2");
+        Mockito.when(pdpEnforcer.AuthorizeRequest(request, requirements)).thenReturn(false);
+
+        Boolean isAuthorized = pdpInterceptor.preHandle(request, response, handlerMethod);
+        Assertions.assertEquals(true, isAuthorized);
+    }
+
+    @Test
+    void PreHandle_IgnoreEndpoints_NotAuthorized() throws Throwable {
+        pdpInterceptor.setEnable(true);
+        pdpInterceptor.setIgnoreEndpoints(new String[] {"/path1", "/path2"});
+
+        request.setRequestURI("/path3");
+        Mockito.when(pdpEnforcer.AuthorizeRequest(request, requirements)).thenReturn(false);
+
+        Boolean isAuthorized = pdpInterceptor.preHandle(request, response, handlerMethod);
+        Assertions.assertEquals(false, isAuthorized);
+    }
+
+    @Test
+    void PreHandle_IgnoreRegex_Authorized() throws Throwable {
+        pdpInterceptor.setEnable(true);
+        pdpInterceptor.setIgnoreRegex(new String[] {"/a+/b+", "/a?b?c"});
+
+        request.setRequestURI("/aaaa/bbbbbbbb");
+        Mockito.when(pdpEnforcer.AuthorizeRequest(request, requirements)).thenReturn(false);
+
+        Boolean isAuthorized = pdpInterceptor.preHandle(request, response, handlerMethod);
+        Assertions.assertEquals(true, isAuthorized);
+    }
+
+    @Test
+    void PreHandle_IgnoreRegex_NotAuthorized() throws Throwable {
+        pdpInterceptor.setEnable(true);
+        pdpInterceptor.setIgnoreEndpoints(new String[] {"/a+/b+", "/a?b?c"});
+
+        request.setRequestURI("/axbxd");
+        Mockito.when(pdpEnforcer.AuthorizeRequest(request, requirements)).thenReturn(false);
+
+        Boolean isAuthorized = pdpInterceptor.preHandle(request, response, handlerMethod);
+        Assertions.assertEquals(false, isAuthorized);
     }
 }

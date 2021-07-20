@@ -1,6 +1,7 @@
 package security.build.pdp.client;
 
 import java.io.IOException;
+import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -18,6 +19,10 @@ public class PDPInterceptor extends HandlerInterceptorAdapter  {
 
     @Value("${pdp.enable:true}")
     private boolean enable;
+    @Value("${pdp.ignoreEndpoints:}")
+    private String[] ignoreEndpoints = new String[0];
+    @Value("${pdp.ignoreRegex:}")
+    private String[] ignoreRegex = new String[0];
     
     @Autowired
     private PDPEnforcer pdpEnforcer;
@@ -27,6 +32,18 @@ public class PDPInterceptor extends HandlerInterceptorAdapter  {
             throws IOException {
 	    if (!enable) {
 	        return true;
+        }
+
+	    for (String e: ignoreEndpoints) {
+	        if (e == request.getRequestURI()) {
+	            return true;
+            }
+        }
+
+	    for (String r: ignoreRegex) {
+	        if (Pattern.compile(r).matcher(request.getRequestURI()).matches()) {
+	            return true;
+            }
         }
 
         HandlerMethod method = (HandlerMethod) handler;
@@ -49,5 +66,13 @@ public class PDPInterceptor extends HandlerInterceptorAdapter  {
 
     public void setEnable(boolean enable) {
         this.enable = enable;
+    }
+
+    public void setIgnoreEndpoints(String[] ignoreEndpoints) {
+	    this.ignoreEndpoints = ignoreEndpoints;
+    }
+
+    public void setIgnoreRegex(String[] ignoreRegex) {
+	    this.ignoreRegex = ignoreRegex;
     }
 }
