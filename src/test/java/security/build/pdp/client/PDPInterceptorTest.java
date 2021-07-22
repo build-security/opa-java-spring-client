@@ -11,10 +11,10 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.web.method.HandlerMethod;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.lang.reflect.Method;
+import java.util.logging.Logger;
 
 public class PDPInterceptorTest {
 
@@ -64,9 +64,9 @@ public class PDPInterceptorTest {
         pdpInterceptor.setEnable(true);
         pdpInterceptor.setInterceptAllEndpoints(true);
 
-        Mockito.when(pdpEnforcer.AuthorizeRequest(null, requirementsWithAuthz)).thenReturn(false);
+        Mockito.when(pdpEnforcer.AuthorizeRequest(request, requirementsWithAuthz)).thenReturn(false);
 
-        Boolean isAuthorized = pdpInterceptor.preHandle(null, response, handlerMethodWithAuthz);
+        Boolean isAuthorized = pdpInterceptor.preHandle(request, response, handlerMethodWithAuthz);
         Assertions.assertEquals(false, isAuthorized);
     }
 
@@ -75,9 +75,9 @@ public class PDPInterceptorTest {
         pdpInterceptor.setEnable(true);
         pdpInterceptor.setInterceptAllEndpoints(true);
 
-        Mockito.when(pdpEnforcer.AuthorizeRequest(null, requirementsWithAuthz)).thenReturn(true);
+        Mockito.when(pdpEnforcer.AuthorizeRequest(request, requirementsWithAuthz)).thenReturn(true);
 
-        Boolean isAuthorized = pdpInterceptor.preHandle(null, response, handlerMethodWithAuthz);
+        Boolean isAuthorized = pdpInterceptor.preHandle(request, response, handlerMethodWithAuthz);
         Assertions.assertEquals(true, isAuthorized);
     }
 
@@ -129,13 +129,10 @@ public class PDPInterceptorTest {
     void PreHandle_NotInterceptAllEndpoints_IgnoreEndpoints_IOException() throws Throwable {
         pdpInterceptor.setEnable(true);
         pdpInterceptor.setInterceptAllEndpoints(false);
-        pdpInterceptor.setIgnoreEndpoints(new String[] {"/path1", "/path2"});
-
-        Mockito.when(pdpEnforcer.AuthorizeRequest(request, requirementsWithoutAuthz)).thenReturn(false);
 
         IOException thrown = Assertions.assertThrows(
                 IOException.class,
-                () -> pdpInterceptor.preHandle(request, response, handlerMethodWithAuthz),
+                () -> pdpInterceptor.setIgnoreEndpoints(new String[] {"/path1", "/path2"}),
                 ""
         );
 
@@ -146,13 +143,10 @@ public class PDPInterceptorTest {
     void PreHandle_NotInterceptAllEndpoints_IgnoreRegex_IOException() throws Throwable {
         pdpInterceptor.setEnable(true);
         pdpInterceptor.setInterceptAllEndpoints(false);
-        pdpInterceptor.setIgnoreEndpoints(new String[] {"/a+/b+", "/a?b?c"});
-
-        Mockito.when(pdpEnforcer.AuthorizeRequest(request, requirementsWithoutAuthz)).thenReturn(false);
 
         IOException thrown = Assertions.assertThrows(
                 IOException.class,
-                () -> pdpInterceptor.preHandle(request, response, handlerMethodWithAuthz),
+                () -> pdpInterceptor.setIgnoreEndpoints(new String[] {"/a+/b+", "/a?b?c"}),
                 ""
         );
 
