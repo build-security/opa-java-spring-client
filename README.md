@@ -44,12 +44,15 @@ application.properties:
  
  [How to get your pdp's hostname and port?](https://docs.build.security/policy-decision-points-pdp#pdp-instances-section)
   ### Optional configuration
- 1. `pdp.allowOnFailure`: Boolean. "Fail open" mechanism to allow access to the API in case the policy engine is not reachable. **Default is false**.
- 2. `pdp.retry.maxAttempts` - Integer. the maximum number of retry attempts in case a failure occurs. **Default is 2**.
- 3. `pdp.enable`: Boolean. Whether or not to consult with the policy engine for the specific request. **Default is true**
- 4. `pdp.readTimeout.milliseconds` - Integer. Read timeout for requests in milliseconds. **Default is 5000**
- 5. `pdp.connectionTimeout.milliseconds` - Integer. Connection timeout in milliseconds. **Default is 5000**
- 6. `pdp.retry.backoff.milliseconds` - Integer. The number of milliseconds to wait between two consecutive retry attempts. **Default is 250**
+ 1. `pdp.enable`: Boolean. Whether or not to enable interception of requests for authz. **Default is true**
+ 2. `pdp.interceptAllEndpoints`: Boolean. Whether all endpoints should be intercepted, regardless of whether their associated controllers have a an `Authorize` annotation or not. **Default is true**
+ 3. `pdp.ignoreEndpoints`: Array. Only set when `pdp.interceptAllEndpoints` is true: a list of endpoints that shouldn't be intercepted for authz.
+ 4. `pdp.ignoreRegex`: Array. Only set when `pdp.interceptAllEndpoints` is true: a list of regex patterns that match endpoints that shouldn't be intercepted for authz.
+ 5. `pdp.allowOnFailure`: Boolean. "Fail open" mechanism to allow access to the API in case the policy engine is not reachable. **Default is false**. 
+ 6. `pdp.readTimeout.milliseconds` - Integer. Read timeout for requests in milliseconds. **Default is 5000**
+ 7. `pdp.connectionTimeout.milliseconds` - Integer. Connection timeout in milliseconds. **Default is 5000**
+ 8. `pdp.retry.maxAttempts` - Integer. the maximum number of retry attempts in case a failure occurs. **Default is 2**.
+ 9. `pdp.retry.backoff.milliseconds` - Integer. The number of milliseconds to wait between two consecutive retry attempts. **Default is 250**
 ## Example usage
 
 Register your PDP as a spring interceptor
