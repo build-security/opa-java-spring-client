@@ -2,16 +2,43 @@
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>2.3.3.RELEASE</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
+
     <groupId>build.security</groupId>
-    <artifactId>opa-java-spring-client</artifactId>
+    <artifactId>policy-decision-point</artifactId>
     <version>0.3.2</version>
-    <description>Demo for Spring Boot with OPA</description>
+    <name>OPA Spring Boot middleware</name>
+    <description>Spring Boot middleware for authorizing requests using OPA as Policy Decision Point (PDP)</description>
+    <url>https://docs.build.security/documentation/getting-started</url>
+
+    <scm>
+        <connection>scm:git:git://github.com/build-security/opa-java-spring-client.git</connection>
+        <developerConnection>scm:git:ssh://github.com:build-security/opa-java-spring-client.git</developerConnection>
+        <url>http://github.com/build-security/opa-java-spring-client/tree/main</url>
+    </scm>
+
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <name>Yash Tewari</name>
+            <email>yashtewari1996@gmail.com</email>
+            <organization>build.security</organization>
+            <organizationUrl>https://build.security</organizationUrl>
+        </developer>
+    </developers>
 
     <properties>
         <java.version>1.8</java.version>
@@ -27,18 +54,21 @@
             <groupId>org.springframework.retry</groupId>
             <artifactId>spring-retry</artifactId>
         </dependency>
-        <!-- Test Dependencies       -->
+
+        <!-- Test Dependencies -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
             <scope>test</scope>
         </dependency>
+
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
             <version>3.6.0</version>
             <scope>test</scope>
         </dependency>
+
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>
@@ -47,5 +77,4 @@
         </dependency>
 
     </dependencies>
-
 </project>
